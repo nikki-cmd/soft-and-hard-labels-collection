@@ -10,9 +10,11 @@ answers = []
 Slabels = []
 
 for q in questions:
-    print("Processing question")
+    print("Processing question:", q)
     
-    answer, softlabels = getSL(q)
+    answer, softlabels = getSL("Q:"+q+"\nA:")
+    print("Answer:", answer)
+    print(len(softlabels[0]))
     
     answers.append(answer)
     Slabels.append(softlabels)
