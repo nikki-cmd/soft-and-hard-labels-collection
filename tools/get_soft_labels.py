@@ -1,19 +1,11 @@
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 import numpy as np
-import csv
+import configs.configs as cfg
 
-model_path = hf_hub_download(
-    repo_id="TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
-    filename="tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
-)
+model_path = cfg.model_path
 
-llm = Llama(
-    model_path=model_path,
-    n_ctx=512,
-    logits_all=True,  # Это критически важно
-    verbose=False
-)
+llm = cfg.llm
 
 def softmax(x):
     e_x = np.exp(x - np.max(x))
@@ -34,7 +26,6 @@ def getSL(question):
     generated_text = output['choices'][0]['text']
     
     print(f"\nQuestion: {question}")
-    print("Generated tokens with probability distributions (after softmax):")
     
     if 'logprobs' in output['choices'][0]:
         tokens = output['choices'][0]['logprobs']['tokens']
@@ -61,11 +52,6 @@ def getSL(question):
             # Применяем softmax
             probabilities = softmax(logits)
             softlabels_matrix[i, :] = probabilities
-            
-            print(f"\nToken {i+1}: '{tokens[i]}'")
-            top_indices = np.argsort(-probabilities)[:5]
-            for idx in top_indices:
-                print(f"  Token {idx}: {probabilities[idx]:.6f}")
     
     else:
         print("Logprobs not available in the output")
