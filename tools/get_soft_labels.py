@@ -24,7 +24,8 @@ def getSL(prompt, max_tokens=10):
             raise RuntimeError("Logits not available.")
         logits = llm.eval_logits[-1]
 
-        probs = softmax(logits)
+        #probs = softmax(logits)
+        probs = logits
         soft_distributions.append(probs)
 
         next_token = int(np.argmax(probs))
