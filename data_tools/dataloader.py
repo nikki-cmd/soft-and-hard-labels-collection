@@ -11,5 +11,4 @@ class Loader():
     
     def get_questions(self):
         dataset = self.load_data()
-        return dataset['question']
-
+        return dataset[['id', 'question']]

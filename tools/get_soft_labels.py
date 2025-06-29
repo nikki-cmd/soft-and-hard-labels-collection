@@ -39,8 +39,5 @@ def getSL(prompt, max_tokens=10):
 
     generated_text = llm.detokenize(generated_tokens).decode("utf-8", errors="ignore")
 
-    softlabels_array = np.array(soft_distributions)
-    np.save("softlabels.npy", softlabels_array)
-    print(f"Soft labels saved to softlabels.npy, shape: {softlabels_array.shape}")
     llm.reset()
     return generated_text, soft_distributions
