@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import configs.configs as cfg
-from datetime import datetime
 import os
 
 class AnswersUploader():

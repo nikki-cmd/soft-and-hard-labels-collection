@@ -1,17 +1,10 @@
-from llama_cpp import Llama
-from huggingface_hub import hf_hub_download
 import numpy as np
-import configs.configs as cfg
-
-model_path = cfg.model_path
-
-llm = cfg.llm
 
 def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
-def getSL(prompt, max_tokens=10):
+def getSL(llm, prompt, max_tokens=10):
     prompt_tokens = llm.tokenize(prompt.encode(), add_bos=True)
 
     generated_tokens = []

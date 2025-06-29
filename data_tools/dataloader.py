@@ -6,7 +6,6 @@ class Loader():
     
     def load_data(self):
         dataset = pd.read_csv(self.data_path)
-        print(dataset.columns)
         return dataset
     
     def get_questions(self):
