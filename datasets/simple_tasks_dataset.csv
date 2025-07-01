@@ -1,21 +1,21 @@
-ground_truth_answer,question,type_of_question
-12,What is 4 × 3?,math
-Oxygen,Which element do humans need to breathe?,biology
-HTML,Which markup language is used to create web pages?,IT
-5,What is 15 divided by 3?,math
-Gravity,What force pulls objects toward the center of the Earth?,physics
-RAM,Which computer component is used for temporary memory?,IT
-25,What is 5 squared?,math
-Water,What is the common name for H₂O?,chemistry
-Python,Which programming language is named after a comedy group?,IT
-100,What is 10 × 10?,math
-Photosynthesis,What process do plants use to make food from sunlight?,biology
-CPU,"What is the ""brain"" of the computer called?",IT
-9,What is the square root of 81?,math
-Carbon dioxide,Which gas do humans exhale?,biology
-Algorithm,What is a step-by-step set of instructions for solving a task?,IT
-8,What is 16 divided by 2?,math
-Mercury,Which planet is closest to the Sun?,astronomy
-Firewall,What is used to block unauthorized access to a computer?,IT
-7,What is 3 + 4?,math
-Mitochondria,What is the powerhouse of the cell?,biology
+id,ground_truth_answer,question,type_of_question
+1,12,What is 4 × 3?,math
+2,Oxygen,Which element do humans need to breathe?,biology
+3,HTML,Which markup language is used to create web pages?,IT
+4,5,What is 15 divided by 3?,math
+5,Gravity,What force pulls objects toward the center of the Earth?,physics
+6,RAM,Which computer component is used for temporary memory?,IT
+7,25,What is 5 squared?,math
+8,Water,What is the common name for H₂O?,chemistry
+9,Python,Which programming language is named after a comedy group?,IT
+10,100,What is 10 × 10?,math
+11,Photosynthesis,What process do plants use to make food from sunlight?,biology
+12,CPU,"What is the ""brain"" of the computer called?",IT
+13,9,What is the square root of 81?,math
+14,Carbon dioxide,Which gas do humans exhale?,biology
+15,Algorithm,What is a step-by-step set of instructions for solving a task?,IT
+16,8,What is 16 divided by 2?,math
+17,Mercury,Which planet is closest to the Sun?,astronomy
+18,Firewall,What is used to block unauthorized access to a computer?,IT
+19,7,What is 3 + 4?,math
+20,Mitochondria,What is the powerhouse of the cell?,biology

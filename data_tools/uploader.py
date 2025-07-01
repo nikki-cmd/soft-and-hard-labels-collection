@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
-import configs.configs as cfg
 import os
 
 class AnswersUploader():
-    def __init__(self, path, answers):
+    def __init__(self, path, answers, questions, dataset_name):
         self.data_path = path
         self.answers = answers
+        self.questions = questions
+        self.dataset_name = dataset_name
         
     def upload_answers(self):
-        df = pd.read_csv(self.data_path)
-        df['llama_attempt'] = self.answers
-        df.to_csv(cfg.answered_dataset_path, index=False)
+        df = pd.DataFrame({'questions':self.questions, 'model_attempt':self.answers})
+        df.to_csv(f"datasets/{self.dataset_name}.csv", index=False)
 
     
 class SoftsUploader():
