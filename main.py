@@ -17,8 +17,6 @@ args, unknown = parser.parse_known_args()
 
 extra_args = parse.parse_key_value_args(unknown)
 
-print("CONF", args.config)
-
 config = importlib.import_module(f'configs.{args.config}')
 
 for key, value in extra_args.items():
@@ -34,7 +32,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f"logs/run_{current_time}.log", encoding='utf-8'),
+        logging.FileHandler(f"runs/logs/run_{current_time}.log", encoding='utf-8'),
         logging.StreamHandler(stream=open(sys.stdout.fileno(), 'w', encoding='utf-8', closefd=False))
     ]
 )
@@ -53,12 +51,12 @@ for idx, q in enumerate(questions):
         
     q_id = loaded_dataset.iloc[idx]['id']
         
-    logger.info(f'Processing question #{q_id}:{q}')
+    logger.info(f'Processing question #{q_id}')
         
     try:
         answer, softlabels = getSL(config.llm, "Q:"+q+"\nA:")
         processing_time = time.time() - start_time
-        logger.info(f"✅ Answer generated (took {processing_time:.2f}s): {answer}")
+        logger.info(f"[OK] Answer generated (took {processing_time:.2f}s)")
             
         answers.append(answer)
         Slabels.append(softlabels)
@@ -66,9 +64,9 @@ for idx, q in enumerate(questions):
         uploader = SoftsUploader(distributions_matrix=Slabels, question_id=q_id, current_time=current_time)
         uploader.upload_distributions()
             
-        logger.info(f"Uploaded distributions for question #: {q_id}")
+        logger.info(f"Uploaded distributions for question #{q_id}")
     except Exception as e:
-        logger.error(f"❌ Error processing question ID {q_id}: {str(e)}", exc_info=True)
+        logger.error(f"[ERROR] Error processing question ID {q_id}: {str(e)}", exc_info=True)
         continue
     
 logger.info("Uploading answers...")
