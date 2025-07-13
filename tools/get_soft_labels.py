@@ -4,7 +4,7 @@ def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
-def getSL(llm, prompt, max_tokens=10):
+def getSL(llm, prompt, max_tokens=128000):
     prompt_tokens = llm.tokenize(prompt.encode(), add_bos=True)
 
     generated_tokens = []
