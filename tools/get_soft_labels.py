@@ -1,10 +1,11 @@
 import numpy as np
+import sys
 
 def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
-def getSL(llm, prompt, max_new_tokens=200):
+def getSL(llm, prompt, max_new_tokens=10):
     prompt_tokens = llm.tokenize(prompt.encode(), add_bos=True)
 
     generated_tokens = []
@@ -25,11 +26,16 @@ def getSL(llm, prompt, max_new_tokens=200):
         generated_tokens.append(next_token)
 
         llm.eval([next_token])
+        
+        progress = (step + 1) / max_new_tokens
+        filled = int(round(20 * progress))
+        bar = '=' * filled + '-' * (20 - filled)
+        percent = int(round(100 * progress))
+        
+        sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} токенов)")
+        sys.stdout.flush()
 
-        if next_token == 2:
-            print(f"End-of-sequence token generated at step {step+1}. Stopping.")
-            break
-
+    print("] Генерация завершена")
     generated_text = llm.detokenize(generated_tokens).decode("utf-8", errors="ignore")
 
     llm.reset()

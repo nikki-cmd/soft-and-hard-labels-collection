@@ -15,3 +15,4 @@ llm = Llama(
 start_question = 1
 
 
+max_new_tokens  = 10

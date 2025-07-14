@@ -27,7 +27,7 @@ if not hasattr(config, 'start_question'):
     config.start_question = 1
     
 if not hasattr(config, 'max_new_tokens'):
-    config.max_new_tokens = 200
+    config.max_new_tokens = 10
 
 current_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
 
@@ -57,7 +57,7 @@ for idx, q in enumerate(questions):
     logger.info(f'Processing question #{q_id}')
         
     try:
-        answer, softlabels = getSL(config.llm, "Q:"+q+"\nA:", max_new_tokens=config.max_new_tokens)
+        answer, softlabels = getSL(config.llm, q, max_new_tokens=config.max_new_tokens)
         processing_time = time.time() - start_time
         logger.info(f"[OK] Answer generated (took {processing_time:.2f}s)")
             

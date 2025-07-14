@@ -10,4 +10,4 @@ llm = Llama(model_path=model_path, n_ctx=128000, n_threads=4, logits_all=True,
 
 start_question = 1
 
-
+max_new_tokens  = 10
