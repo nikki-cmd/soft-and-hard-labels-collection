@@ -32,10 +32,10 @@ def getSL(llm, prompt, max_new_tokens=10):
         bar = '=' * filled + '-' * (20 - filled)
         percent = int(round(100 * progress))
         
-        sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} токенов)")
+        sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} tokens)")
         sys.stdout.flush()
 
-    print("] Генерация завершена")
+    print("Processing finished.")
     generated_text = llm.detokenize(generated_tokens).decode("utf-8", errors="ignore")
 
     llm.reset()

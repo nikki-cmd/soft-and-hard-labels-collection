@@ -41,7 +41,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-logger.info(f"Начало обработки с вопроса #{config.start_question}")
+logger.info(f"Start from question #{config.start_question}")
 loader = Loader(path=config.dataset_path, start_question=config.start_question)
 loaded_dataset = loader.get_questions()
 questions = loaded_dataset['question']
