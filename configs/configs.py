@@ -6,3 +6,4 @@ distribution_matrix = "datasets/softlabels_numpy_zip.npz"
 
 start_question = 1
 
+max_new_tokens  = 200

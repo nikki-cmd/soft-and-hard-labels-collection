@@ -4,7 +4,7 @@ def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
-def getSL(llm, prompt, max_tokens=128000):
+def getSL(llm, prompt, max_new_tokens=200):
     prompt_tokens = llm.tokenize(prompt.encode(), add_bos=True)
 
     generated_tokens = []
@@ -12,7 +12,7 @@ def getSL(llm, prompt, max_tokens=128000):
 
     llm.eval(prompt_tokens)
 
-    for step in range(max_tokens):
+    for step in range(max_new_tokens):
         if not llm.eval_logits:
             raise RuntimeError("Logits not available.")
         logits = llm.eval_logits[-1]
