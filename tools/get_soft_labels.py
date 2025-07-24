@@ -1,14 +1,16 @@
 import numpy as np
 import sys
 
-def softmax(x):
+def softmax(x, temperature):
     x = np.array(x, dtype=np.float64)
+    x_scaled = x / temperature
+    e_x = np.exp(x_scaled - np.max(x_scaled))
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
 def top_p_get_logits(logits, p=0.9, temperature=1.0):
-        logits = np.array(logits, dtype=np.float64) / temperature
-        probs = softmax(logits)
+        logits = np.array(logits, dtype=np.float64)
+        probs = softmax(logits, temperature)
         
         sorted_indices = np.argsort(probs)[::-1]
         sorted_probs = probs[sorted_indices]
@@ -17,10 +19,8 @@ def top_p_get_logits(logits, p=0.9, temperature=1.0):
         cutoff = int(np.sum(cumulative_probs < p)) + 1
         top_p_indices = sorted_indices[:cutoff]
         
-        # Возвращаем логиты (до softmax) только для токенов из top-p
         top_p_logits = logits[top_p_indices]
-        
-        # Нормализуем вероятности для семплирования
+
         top_p_probs = probs[top_p_indices]
         top_p_probs = top_p_probs / np.sum(top_p_probs)
         
@@ -52,14 +52,11 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
             top_p_indices = np.array([next_token])
             top_p_logits = np.array([logits[next_token]])
 
-        # Получаем текст токена
         token_text = llm.detokenize([next_token]).decode('utf-8', errors='ignore')
         hard_labels_text += token_text
-        
-        # Сохраняем логиты для токенов из top-p
+
         soft_labels_logits_list.append(top_p_logits)
-        
-        # Продолжаем генерацию
+
         llm.eval([next_token])
         
         progress = (step + 1) / max_new_tokens
