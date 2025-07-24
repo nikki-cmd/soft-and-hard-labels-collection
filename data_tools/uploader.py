@@ -25,6 +25,7 @@ class SoftsUploader():
         folder_path = f'runs/softlabels/run{self.current_time}'
         os.makedirs(folder_path, exist_ok=True)
         
-        np.savez(os.path.join(folder_path, f'question_{self.question_id}.npz'),*self.distributions_matrix)
+        np.savez(os.path.join(folder_path, f'question_{self.question_id}.npz'), 
+                logits=np.array(self.distributions_matrix, dtype=object))
     
         

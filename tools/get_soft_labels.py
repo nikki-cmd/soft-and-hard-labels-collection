@@ -2,29 +2,64 @@ import numpy as np
 import sys
 
 def softmax(x):
+    x = np.array(x, dtype=np.float64)
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
-def getSL(llm, prompt, max_new_tokens=10):
+def top_p_get_logits(logits, p=0.9, temperature=1.0):
+        logits = np.array(logits, dtype=np.float64) / temperature
+        probs = softmax(logits)
+        
+        sorted_indices = np.argsort(probs)[::-1]
+        sorted_probs = probs[sorted_indices]
+        cumulative_probs = np.cumsum(sorted_probs)
+        
+        cutoff = int(np.sum(cumulative_probs < p)) + 1
+        top_p_indices = sorted_indices[:cutoff]
+        
+        # Возвращаем логиты (до softmax) только для токенов из top-p
+        top_p_logits = logits[top_p_indices]
+        
+        # Нормализуем вероятности для семплирования
+        top_p_probs = probs[top_p_indices]
+        top_p_probs = top_p_probs / np.sum(top_p_probs)
+        
+        selected_index = np.random.choice(top_p_indices, p=top_p_probs)
+        
+        return selected_index, top_p_indices, top_p_logits
+
+def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
     prompt_tokens = llm.tokenize(prompt.encode(), add_bos=True)
-
-    generated_tokens = []
-    soft_distributions = []
-
+    
+    llm.reset()
     llm.eval(prompt_tokens)
+    
+    hard_labels_text = ""
+    soft_labels_logits_list = []
 
     for step in range(max_new_tokens):
         if not llm.eval_logits:
             raise RuntimeError("Logits not available.")
         logits = llm.eval_logits[-1]
+        
+        try:
+            next_token, top_p_indices, top_p_logits = top_p_get_logits(
+                logits, p=top_p, temperature=temperature
+            )
+        except Exception as e:
+            print(f"Ошибка на шаге {step}: {e}")
+            next_token = int(np.argmax(logits))  # fallback к greedy
+            top_p_indices = np.array([next_token])
+            top_p_logits = np.array([logits[next_token]])
 
-        #probs = softmax(logits)
-        probs = logits
-        soft_distributions.append(probs)
-
-        next_token = int(np.argmax(probs))
-        generated_tokens.append(next_token)
-
+        # Получаем текст токена
+        token_text = llm.detokenize([next_token]).decode('utf-8', errors='ignore')
+        hard_labels_text += token_text
+        
+        # Сохраняем логиты для токенов из top-p
+        soft_labels_logits_list.append(top_p_logits)
+        
+        # Продолжаем генерацию
         llm.eval([next_token])
         
         progress = (step + 1) / max_new_tokens
@@ -36,7 +71,5 @@ def getSL(llm, prompt, max_new_tokens=10):
         sys.stdout.flush()
 
     print("Processing finished.")
-    generated_text = llm.detokenize(generated_tokens).decode("utf-8", errors="ignore")
-
-    llm.reset()
-    return generated_text, soft_distributions
+    
+    return hard_labels_text, soft_labels_logits_list
