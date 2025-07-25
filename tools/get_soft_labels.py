@@ -5,7 +5,6 @@ def softmax(x, temperature):
     x = np.array(x, dtype=np.float64)
     x_scaled = x / temperature
     e_x = np.exp(x_scaled - np.max(x_scaled))
-    e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
 def top_p_get_logits(logits, p=0.9, temperature=1.0):
@@ -66,7 +65,5 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
         
         sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} tokens)")
         sys.stdout.flush()
-
-    print("Processing finished.")
     
     return hard_labels_text, soft_labels_logits_list

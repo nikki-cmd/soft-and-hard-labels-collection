@@ -50,7 +50,6 @@ loaded_dataset = loader.get_questions()
 questions = loaded_dataset['question']
 
 answers = []
-Slabels = []
 
 for idx, q in enumerate(questions):
     start_time = time.time()
@@ -58,16 +57,15 @@ for idx, q in enumerate(questions):
     q_id = loaded_dataset.iloc[idx]['id']
         
     logger.info(f'Processing question #{q_id}')
-        
+    
     try:
         answer, softlabels = getSL(config.llm, q, max_new_tokens=config.max_new_tokens, temperature=config.temperature)
         processing_time = time.time() - start_time
         logger.info(f"[OK] Answer generated (took {processing_time:.2f}s)")
             
         answers.append(answer)
-        Slabels.append(softlabels)
             
-        uploader = SoftsUploader(distributions_matrix=Slabels, question_id=q_id, current_time=current_time)
+        uploader = SoftsUploader(distributions_matrix=softlabels, question_id=q_id, current_time=current_time)
         uploader.upload_distributions()
             
         logger.info(f"Uploaded distributions for question #{q_id}")
