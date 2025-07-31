@@ -21,7 +21,7 @@ def top_p_get_logits(logits, p=0.9, temperature=1.0):
         top_p_logits = logits[top_p_indices]
 
         top_p_probs = probs[top_p_indices]
-        top_p_probs = top_p_probs / np.sum(top_p_probs)
+        top_p_probs = softmax(logits[top_p_indices])
         
         selected_index = np.random.choice(top_p_indices, p=top_p_probs)
         
