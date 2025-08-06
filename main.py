@@ -59,13 +59,13 @@ for idx, q in enumerate(questions):
     logger.info(f'Processing question #{q_id}')
     
     try:
-        answer, softlabels = getSL(config.llm, q, max_new_tokens=config.max_new_tokens, temperature=config.temperature)
+        answer, softlabels, indeces = getSL(config.llm, q, max_new_tokens=config.max_new_tokens, temperature=config.temperature)
         processing_time = time.time() - start_time
         logger.info(f"[OK] Answer generated (took {processing_time:.2f}s)")
             
         answers.append(answer)
             
-        uploader = SoftsUploader(distributions_matrix=softlabels, question_id=q_id, current_time=current_time)
+        uploader = SoftsUploader(distributions_matrix=softlabels, indeces_matrix=indeces, question_id=q_id, current_time=current_time)
         uploader.upload_distributions()
             
         logger.info(f"Uploaded distributions for question #{q_id}")

@@ -21,7 +21,7 @@ def top_p_get_logits(logits, p=0.9, temperature=1.0):
         top_p_logits = logits[top_p_indices]
 
         top_p_probs = probs[top_p_indices]
-        top_p_probs = softmax(logits[top_p_indices])
+        top_p_probs = softmax(logits[top_p_indices], temperature)
         
         selected_index = np.random.choice(top_p_indices, p=top_p_probs)
         
@@ -35,6 +35,7 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
     
     hard_labels_text = ""
     soft_labels_logits_list = []
+    indeces_list = []
 
     for step in range(max_new_tokens):
         if not llm.eval_logits:
@@ -45,6 +46,7 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
             next_token, top_p_indices, top_p_logits = top_p_get_logits(
                 logits, p=top_p, temperature=temperature
             )
+            
         except Exception as e:
             print(f"Ошибка на шаге {step}: {e}")
             next_token = int(np.argmax(logits))  # fallback к greedy
@@ -55,6 +57,7 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
         hard_labels_text += token_text
 
         soft_labels_logits_list.append(top_p_logits)
+        indeces_list.append(top_p_indices)
 
         llm.eval([next_token])
         
@@ -66,4 +69,4 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
         sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} tokens)")
         sys.stdout.flush()
     
-    return hard_labels_text, soft_labels_logits_list
+    return hard_labels_text, soft_labels_logits_list, indeces_list
