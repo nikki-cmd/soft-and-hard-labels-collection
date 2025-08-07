@@ -3,14 +3,15 @@ import numpy as np
 import os
 
 class AnswersUploader():
-    def __init__(self, path, answers, questions, dataset_name):
+    def __init__(self, path, answers, questions, tokenized_answers, dataset_name):
         self.data_path = path
         self.answers = answers
         self.questions = questions
         self.dataset_name = dataset_name
+        self.tokenized_answers = tokenized_answers
         
     def upload_answers(self):
-        df = pd.DataFrame({'questions':self.questions, 'model_attempt':self.answers})
+        df = pd.DataFrame({'questions':self.questions, 'model_attempt':self.answers, 'tokenized_model_attempt':self.tokenized_answers})
         df.to_csv(f"runs/hardlabels/{self.dataset_name}.csv", index=False)
 
     

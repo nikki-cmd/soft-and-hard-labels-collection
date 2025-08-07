@@ -36,6 +36,7 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
     hard_labels_text = ""
     soft_labels_logits_list = []
     indeces_list = []
+    tokens_list = []
 
     for step in range(max_new_tokens):
         if not llm.eval_logits:
@@ -53,6 +54,7 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
             top_p_indices = np.array([next_token])
             top_p_logits = np.array([logits[next_token]])
 
+        tokens_list.append(next_token)
         token_text = llm.detokenize([next_token]).decode('utf-8', errors='ignore')
         hard_labels_text += token_text
 
@@ -69,4 +71,4 @@ def getSL(llm, prompt, max_new_tokens=10, top_p=0.9, temperature=0.8):
         sys.stdout.write(f"\r[{bar}] {percent}% ({step+1}/{max_new_tokens} tokens)")
         sys.stdout.flush()
     
-    return hard_labels_text, soft_labels_logits_list, indeces_list
+    return hard_labels_text, soft_labels_logits_list, indeces_list, tokens_list
